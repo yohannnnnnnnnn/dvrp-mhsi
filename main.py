@@ -87,6 +87,22 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             target = np.array(pygame.mouse.get_pos(), dtype=float)
 
+    # --- Keyboard Control for Target (Simulates Human Gesture) ---
+    keys = pygame.key.get_pressed()
+    move_step = 6.0
+    if keys[pygame.K_UP] or keys[pygame.K_w]:
+        target[1] -= move_step
+    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        target[1] += move_step
+    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        target[0] -= move_step
+    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        target[0] += move_step
+    
+    # Keep target within screen bounds
+    target[0] = np.clip(target[0], 20, WIDTH - 20)
+    target[1] = np.clip(target[1], 20, HEIGHT - 20)
+
     # Move obstacles dynamically (simulate dynamic obstacles)
     t = pygame.time.get_ticks() / 1000.0
     obstacles[0][1] = 200 + 100 * np.sin(t)
@@ -102,7 +118,6 @@ while running:
     # Draw obstacles (Red)
     for obs in obstacles:
         pygame.draw.circle(screen, (255, 50, 50), (int(obs[0]), int(obs[1])), 15)
-        # Draw sense radius
         pygame.draw.circle(screen, (100, 0, 0), (int(obs[0]), int(obs[1])), int(D_SENSE), 1)
         
     # Draw target (Green)
